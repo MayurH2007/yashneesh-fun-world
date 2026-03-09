@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yashneesh Fun World | Belagavi Water Park</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ocean: #003d6b;
+    --deep: #001a30;
+    --cyan: #00d4ff;
+    --aqua: #00f5c8;
+    --surf: #0099cc;
+    --foam: #e8f8ff;
+    --gold: #ffd166;
+    --coral: #ff6b6b;
+    --white: #ffffff;
+  }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--deep); color: var(--white); overflow-x: hidden; cursor: none; }
+
+  .cursor { width: 12px; height: 12px; background: var(--cyan); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999; transition: transform 0.1s ease; mix-blend-mode: screen; }
+  .cursor-ring { width: 36px; height: 36px; border: 2px solid rgba(0,212,255,0.5); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9998; transition: all 0.15s ease; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; padding: 20px 60px; display: flex; align-items: center; justify-content: space-between; background: rgba(0,10,30,0.6); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0,212,255,0.1); transition: all 0.3s ease; }
+  nav.scrolled { padding: 14px 60px; background: rgba(0,10,30,0.95); }
+  .nav-logo { font-family: 'Syne', sans-serif; font-weight: 900; font-size: 1.4rem; color: var(--white); text-decoration: none; letter-spacing: -0.02em; }
+  .nav-logo span { color: var(--cyan); }
+  .nav-links { display: flex; gap: 40px; list-style: none; }
+  .nav-links a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.9rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; position: relative; transition: color 0.3s; }
+  .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: var(--cyan); transition: width 0.3s ease; }
+  .nav-links a:hover { color: var(--cyan); }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-cta { background: var(--cyan); color: var(--deep) !important; padding: 10px 24px; border-radius: 50px; font-weight: 700 !important; }
+  .nav-cta::after { display: none !important; }
+  .nav-cta:hover { transform: translateY(-2px) !important; box-shadow: 0 8px 30px rgba(0,212,255,0.4) !important; color: var(--deep) !important; }
+
+  .hero { min-height: 100vh; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .hero-bg { position: absolute; inset: 0; z-index: 1; }
+  .hero-particles { position: absolute; inset: 0; overflow: hidden; z-index: 2; }
+  .bubble { position: absolute; border-radius: 50%; background: rgba(0,212,255,0.15); animation: floatUp linear infinite; }
+  @keyframes floatUp { 0% { transform: translateY(100vh) scale(0); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 0.5; } 100% { transform: translateY(-20vh) scale(1); opacity: 0; } }
+
+  .waves-container { position: absolute; bottom: 0; left: 0; right: 0; height: 200px; z-index: 3; }
+  .wave { position: absolute; bottom: 0; left: 0; width: 200%; height: 100%; }
+  .wave1 { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120'%3E%3Cpath d='M0,60 C150,120 350,0 600,60 C850,120 1050,0 1200,60 L1200,120 L0,120 Z' fill='%23002244' fill-opacity='0.6'/%3E%3C/svg%3E") repeat-x; background-size: 600px 120px; animation: wave 8s linear infinite; opacity: 0.7; }
+  .wave2 { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120'%3E%3Cpath d='M0,80 C200,20 400,120 600,80 C800,40 1000,120 1200,80 L1200,120 L0,120 Z' fill='%23001a30' fill-opacity='0.8'/%3E%3C/svg%3E") repeat-x; background-size: 800px 120px; animation: wave 12s linear infinite reverse; opacity: 0.9; }
+  @keyframes wave { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+  .hero-content { position: relative; z-index: 10; text-align: center; padding: 0 20px; max-width: 900px; }
+  .hero-badge { display: inline-block; background: rgba(0,212,255,0.15); border: 1px solid rgba(0,212,255,0.4); color: var(--cyan); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; padding: 8px 20px; border-radius: 50px; margin-bottom: 28px; animation: fadeDown 0.8s ease both; }
+  .hero h1 { font-family: 'Syne', sans-serif; font-weight: 900; font-size: clamp(3rem, 8vw, 7rem); line-height: 0.95; letter-spacing: -0.03em; animation: fadeDown 0.8s ease 0.2s both; margin-bottom: 20px; }
+  .hero h1 .line-accent { color: var(--cyan); display: block; }
+  .hero p { font-size: clamp(1rem, 2vw, 1.25rem); color: rgba(255,255,255,0.85); font-weight: 300; line-height: 1.7; max-width: 560px; margin: 0 auto 44px; animation: fadeDown 0.8s ease 0.4s both; }
+  .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; animation: fadeDown 0.8s ease 0.6s both; }
+
+  .btn-primary { background: var(--cyan); color: var(--deep); border: none; padding: 16px 40px; border-radius: 50px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; letter-spacing: 0.05em; cursor: none; transition: all 0.3s ease; position: relative; overflow: hidden; }
+  .btn-primary:hover { box-shadow: 0 12px 40px rgba(0,212,255,0.5); transform: translateY(-3px); }
+  .btn-secondary { background: transparent; color: var(--white); border: 1.5px solid rgba(255,255,255,0.4); padding: 16px 40px; border-radius: 50px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; cursor: none; transition: all 0.3s ease; }
+  .btn-secondary:hover { border-color: var(--cyan); color: var(--cyan); transform: translateY(-3px); }
+
+  .stats-bar { background: rgba(0,212,255,0.05); border-top: 1px solid rgba(0,212,255,0.15); border-bottom: 1px solid rgba(0,212,255,0.15); padding: 40px 60px; display: flex; justify-content: center; gap: 80px; flex-wrap: wrap; }
+  .stat-item { text-align: center; }
+  .stat-num { font-family: 'Syne', sans-serif; font-size: 2.8rem; font-weight: 900; color: var(--cyan); line-height: 1; display: block; }
+  .stat-label { font-size: 0.8rem; color: rgba(255,255,255,0.5); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 6px; display: block; }
+
+  .section-tag { display: inline-block; color: var(--cyan); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 12px; }
+  .section-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(2rem, 4vw, 3.2rem); letter-spacing: -0.02em; line-height: 1.1; }
+  .section-title span { color: var(--cyan); }
+
+  .about-section { padding: 100px 60px; max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .about-text p { color: rgba(255,255,255,0.6); line-height: 1.8; font-size: 1.05rem; margin-top: 20px; }
+  .about-features { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 32px; }
+  .feature-pill { display: flex; align-items: center; gap: 10px; background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.2); border-radius: 12px; padding: 12px 16px; font-size: 0.85rem; font-weight: 500; transition: all 0.3s; }
+  .feature-pill:hover { background: rgba(0,212,255,0.15); transform: translateY(-2px); }
+  .about-card-big { background: linear-gradient(135deg, rgba(0,100,160,0.4), rgba(0,50,100,0.6)); border: 1px solid rgba(0,212,255,0.2); border-radius: 24px; padding: 48px; text-align: center; backdrop-filter: blur(10px); position: relative; overflow: hidden; }
+  .park-hours-grid { display: grid; gap: 12px; margin-top: 20px; }
+  .hour-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 0.9rem; }
+  .hour-row .day { color: rgba(255,255,255,0.5); }
+  .hour-row .time { color: var(--cyan); font-weight: 600; }
+
+  .rides-section { padding: 100px 60px; background: rgba(0,30,60,0.5); }
+  .rides-header { text-align: center; margin-bottom: 60px; }
+  .rides-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; max-width: 1200px; margin: 0 auto; }
+  .ride-card { background: linear-gradient(135deg, rgba(0,80,140,0.3), rgba(0,40,80,0.5)); border: 1px solid rgba(0,212,255,0.15); border-radius: 20px; padding: 36px 28px; transition: all 0.4s ease; position: relative; overflow: hidden; cursor: none; }
+  .ride-card:hover { transform: translateY(-8px); border-color: rgba(0,212,255,0.5); }
+  .ride-icon { font-size: 3rem; margin-bottom: 20px; display: block; filter: drop-shadow(0 0 20px rgba(0,212,255,0.5)); }
+  .ride-card h3 { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
+  .ride-card p { color: rgba(255,255,255,0.55); font-size: 0.9rem; line-height: 1.6; }
+  .ride-tag { display: inline-block; margin-top: 16px; background: rgba(0,212,255,0.15); color: var(--cyan); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 12px; border-radius: 50px; font-weight: 600; }
+
+  .tickets-section { padding: 100px 60px; max-width: 1200px; margin: 0 auto; }
+  .tickets-header { text-align: center; margin-bottom: 60px; }
+  .tickets-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px; max-width: 900px; margin: 0 auto; }
+  .ticket-card { border-radius: 24px; padding: 48px 36px; text-align: center; position: relative; overflow: hidden; transition: transform 0.3s; cursor: none; }
+  .ticket-card:hover { transform: translateY(-6px); }
+  .ticket-card.regular { background: linear-gradient(135deg, rgba(0,70,120,0.6), rgba(0,40,80,0.8)); border: 1px solid rgba(0,212,255,0.2); }
+  .ticket-card.featured { background: linear-gradient(135deg, #0099cc, #003d6b); border: 2px solid var(--cyan); box-shadow: 0 20px 60px rgba(0,153,204,0.4); }
+  .ticket-featured-badge { position: absolute; top: 16px; right: 16px; background: var(--gold); color: #333; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 12px; border-radius: 50px; }
+  .ticket-type { font-size: 0.8rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 12px; }
+  .ticket-price { font-family: 'Syne', sans-serif; font-size: 4rem; font-weight: 900; line-height: 1; color: var(--white); }
+  .ticket-price .rupee { font-size: 2rem; vertical-align: top; margin-top: 12px; display: inline-block; }
+  .ticket-perks { list-style: none; margin: 28px 0; display: flex; flex-direction: column; gap: 10px; }
+  .ticket-perks li { font-size: 0.9rem; color: rgba(255,255,255,0.75); display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .ticket-perks li::before { content: '✓'; color: var(--aqua); font-weight: 700; font-size: 0.8rem; }
+  .ticket-btn { width: 100%; padding: 14px; border-radius: 50px; border: none; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; cursor: none; transition: all 0.3s; }
+  .ticket-card.regular .ticket-btn { background: rgba(0,212,255,0.15); color: var(--cyan); border: 1.5px solid rgba(0,212,255,0.4); }
+  .ticket-card.regular .ticket-btn:hover { background: var(--cyan); color: var(--deep); }
+  .ticket-card.featured .ticket-btn { background: var(--white); color: var(--ocean); }
+  .ticket-card.featured .ticket-btn:hover { box-shadow: 0 8px 30px rgba(255,255,255,0.3); transform: scale(1.02); }
+
+  .gallery-section { padding: 100px 60px; background: rgba(0,20,50,0.6); }
+  .gallery-header { text-align: center; margin-bottom: 50px; }
+  .gallery-grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: 200px 200px; gap: 16px; max-width: 1200px; margin: 0 auto; }
+  .gallery-item { border-radius: 16px; overflow: hidden; position: relative; cursor: none; }
+  .gallery-item:first-child { grid-column: span 2; grid-row: span 2; }
+  .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; display: block; }
+  .gallery-item:hover img { transform: scale(1.08); }
+  .gallery-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,30,60,0.7), transparent); opacity: 0; transition: opacity 0.3s; }
+  .gallery-item:hover .gallery-overlay { opacity: 1; }
+
+  .map-contact-section { padding: 100px 60px; max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; }
+  .map-container { border-radius: 20px; overflow: hidden; border: 1px solid rgba(0,212,255,0.2); box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+  .map-container iframe { filter: saturate(0.5) hue-rotate(180deg) brightness(0.7); display: block; }
+  .form-group { margin-bottom: 16px; }
+  .form-group input, .form-group textarea { width: 100%; background: rgba(0,50,100,0.3); border: 1px solid rgba(0,212,255,0.2); border-radius: 12px; padding: 14px 18px; color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 0.95rem; outline: none; transition: border-color 0.3s; }
+  .form-group input::placeholder, .form-group textarea::placeholder { color: rgba(255,255,255,0.3); }
+  .form-group input:focus, .form-group textarea:focus { border-color: var(--cyan); }
+  .form-group textarea { height: 120px; resize: none; }
+  .form-submit { width: 100%; padding: 14px; background: var(--cyan); color: var(--deep); border: none; border-radius: 12px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; cursor: none; transition: all 0.3s; }
+  .form-submit:hover { box-shadow: 0 8px 30px rgba(0,212,255,0.4); transform: translateY(-2px); }
+
+  .chatbot-widget { position: fixed; bottom: 30px; right: 30px; z-index: 900; }
+  .chat-toggle { width: 60px; height: 60px; background: var(--cyan); border-radius: 50%; border: none; cursor: none; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 8px 30px rgba(0,212,255,0.5); transition: all 0.3s; }
+  .chat-toggle:hover { transform: scale(1.1); }
+  .chat-window { position: absolute; bottom: 76px; right: 0; width: 320px; background: rgba(0,20,50,0.95); border: 1px solid rgba(0,212,255,0.3); border-radius: 20px; overflow: hidden; backdrop-filter: blur(20px); box-shadow: 0 20px 60px rgba(0,0,0,0.5); display: none; flex-direction: column; }
+  .chat-window.open { display: flex; animation: slideUp 0.3s ease; }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .chat-head { background: linear-gradient(90deg, #006699, #003d6b); padding: 18px 20px; display: flex; align-items: center; gap: 12px; }
+  .chat-avatar { width: 38px; height: 38px; background: var(--cyan); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+  .chat-head-info h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; }
+  .chat-head-info span { font-size: 0.75rem; color: var(--aqua); }
+  .chat-body-inner { padding: 16px; height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+  .chat-msg { max-width: 85%; padding: 10px 14px; border-radius: 14px; font-size: 0.85rem; line-height: 1.4; }
+  .chat-msg.bot { background: rgba(0,100,160,0.4); border: 1px solid rgba(0,212,255,0.2); align-self: flex-start; }
+  .chat-msg.user { background: var(--cyan); color: var(--deep); font-weight: 500; align-self: flex-end; }
+  .chat-input-row { display: flex; gap: 8px; padding: 12px; border-top: 1px solid rgba(0,212,255,0.15); }
+  .chat-input-row input { flex: 1; background: rgba(0,50,100,0.3); border: 1px solid rgba(0,212,255,0.2); border-radius: 50px; padding: 10px 14px; color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 0.85rem; outline: none; }
+  .chat-input-row input:focus { border-color: var(--cyan); }
+  .chat-send { width: 38px; height: 38px; background: var(--cyan); color: var(--deep); border: none; border-radius: 50%; font-size: 1rem; cursor: none; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .chat-send:hover { transform: scale(1.1); }
+
+  footer { background: rgba(0,10,25,0.95); border-top: 1px solid rgba(0,212,255,0.1); padding: 60px; text-align: center; }
+  .footer-logo { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 900; margin-bottom: 12px; }
+  .footer-logo span { color: var(--cyan); }
+  .footer-tagline { color: rgba(255,255,255,0.4); font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 32px; }
+  .footer-links { display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; margin-bottom: 32px; }
+  .footer-links a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.85rem; transition: color 0.3s; }
+  .footer-links a:hover { color: var(--cyan); }
+  .footer-copy { color: rgba(255,255,255,0.25); font-size: 0.8rem; }
+
+  @keyframes fadeDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    .about-section { grid-template-columns: 1fr; gap: 40px; padding: 60px 24px; }
+    .map-contact-section { grid-template-columns: 1fr; padding: 60px 24px; }
+    .gallery-grid { grid-template-columns: 1fr 1fr; }
+    .gallery-item:first-child { grid-column: span 1; grid-row: span 1; }
+    .stats-bar { gap: 40px; padding: 40px 24px; }
+    .rides-section, .gallery-section, .tickets-section { padding: 60px 24px; }
+    footer { padding: 40px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav id="navbar">
+  <a href="#" class="nav-logo">Yashneesh <span>Fun World</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#rides">Rides</a></li>
+    <li><a href="#tickets">Tickets</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#tickets" class="nav-cta">Book Now</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <img src="https://files.yappe.in/place/full/yashneesh-fun-world-879451.webp" alt="Yashneesh Fun World" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;opacity:0.55;">
+  <div class="hero-bg" style="background:linear-gradient(to bottom, rgba(0,15,40,0.5) 0%, rgba(0,30,70,0.3) 50%, rgba(0,10,30,0.8) 100%);"></div>
+  <div class="hero-particles" id="particles"></div>
+  <div class="waves-container">
+    <div class="wave wave1"></div>
+    <div class="wave wave2"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">🌊 Belagavi's #1 Water Park</div>
+    <h1>Dive Into<span class="line-accent">Pure Fun</span></h1>
+    <p>Thrilling water slides, rain dance, wave pools & unforgettable family moments. Your summer escape starts here.</p>
+    <div class="hero-buttons">
+      <button class="btn-primary" onclick="document.getElementById('tickets').scrollIntoView({behavior:'smooth'})">🎟️ Book Tickets</button>
+      <button class="btn-secondary" onclick="document.getElementById('rides').scrollIntoView({behavior:'smooth'})">Explore Rides →</button>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar reveal">
+  <div class="stat-item"><span class="stat-num" data-target="12">0</span><span class="stat-label">Water Rides</span></div>
+  <div class="stat-item"><span class="stat-num" data-target="50000">0</span><span class="stat-label">Happy Visitors</span></div>
+  <div class="stat-item"><span class="stat-num" data-target="10">0</span><span class="stat-label">Acres of Fun</span></div>
+  <div class="stat-item"><span class="stat-num" data-target="365">0</span><span class="stat-label">Days Open</span></div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-section">
+    <div class="about-text reveal">
+      <span class="section-tag">✦ About the Park</span>
+      <h2 class="section-title">Belagavi's Most <span>Thrilling</span> Water Destination</h2>
+      <p>Yashneesh Fun World is the ultimate water adventure destination in Belagavi. From heart-pounding water slides to the magical rain dance arena, we've crafted every corner for maximum thrills and memories that last a lifetime.</p>
+      <div class="about-features">
+        <div class="feature-pill"><span>🎢</span> Thrilling Slides</div>
+        <div class="feature-pill"><span>💃</span> Rain Dance</div>
+        <div class="feature-pill"><span>🏊</span> Swimming Pool</div>
+        <div class="feature-pill"><span>🍔</span> Food Court</div>
+        <div class="feature-pill"><span>🅿️</span> Free Parking</div>
+        <div class="feature-pill"><span>👪</span> Family Zones</div>
+      </div>
+    </div>
+    <div class="about-visual reveal">
+      <div class="about-card-big">
+        <h3 style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;margin-bottom:6px;">Park Timings</h3>
+        <p style="color:rgba(255,255,255,0.5);font-size:0.85rem;margin-bottom:20px;">Open all days of the week</p>
+        <div class="park-hours-grid">
+          <div class="hour-row"><span class="day">Monday – Friday</span><span class="time">10:00 AM – 7:00 PM</span></div>
+          <div class="hour-row"><span class="day">Saturday</span><span class="time">9:00 AM – 8:00 PM</span></div>
+          <div class="hour-row"><span class="day">Sunday</span><span class="time">9:00 AM – 8:00 PM</span></div>
+          <div class="hour-row"><span class="day">Public Holidays</span><span class="time">9:00 AM – 9:00 PM</span></div>
+        </div>
+        <div style="margin-top:28px;padding:16px;background:rgba(0,212,255,0.1);border-radius:12px;border:1px solid rgba(0,212,255,0.2);">
+          <span style="font-size:0.8rem;color:rgba(255,255,255,0.5);">📍 Location</span>
+          <p style="font-size:0.95rem;font-weight:500;margin-top:4px;">Belagavi, Karnataka, India</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RIDES -->
+<section id="rides" class="rides-section">
+  <div class="rides-header reveal">
+    <span class="section-tag">✦ Attractions</span>
+    <h2 class="section-title">Epic Rides & <span>Adventures</span></h2>
+  </div>
+  <div class="rides-grid">
+    <div class="ride-card reveal"><span class="ride-icon">🎢</span><h3>Water Slides</h3><p>High-speed twisting slides that send you rushing into the splash zone at full speed. Guaranteed screams!</p><span class="ride-tag">Thrill Level: High</span></div>
+    <div class="ride-card reveal"><span class="ride-icon">💦</span><h3>Wave Pool</h3><p>Ride the artificial waves in our massive pool. Perfect for all ages — body surf or just float!</p><span class="ride-tag">All Ages</span></div>
+    <div class="ride-card reveal"><span class="ride-icon">🌧️</span><h3>Rain Dance</h3><p>Dance under refreshing artificial rain showers with pulsing music. The most popular spot in the park!</p><span class="ride-tag">Fan Favorite</span></div>
+    <div class="ride-card reveal"><span class="ride-icon">🏊</span><h3>Swimming Pool</h3><p>Our large clean swimming pool with lifeguard supervision. Swim laps or play with the family.</p><span class="ride-tag">Family Safe</span></div>
+    <div class="ride-card reveal"><span class="ride-icon">🚿</span><h3>Water Splash Zone</h3><p>Interactive splash pads and water guns for the little ones. Safe, shallow and loads of fun.</p><span class="ride-tag">Kids Zone</span></div>
+    <div class="ride-card reveal"><span class="ride-icon">🪂</span><h3>Lazy River</h3><p>Float gently along our winding river. The ultimate chill-out experience between the big thrills.</p><span class="ride-tag">Relaxation</span></div>
+  </div>
+</section>
+
+<!-- TICKETS -->
+<section id="tickets">
+  <div class="tickets-section">
+    <div class="tickets-header reveal">
+      <span class="section-tag">✦ Pricing</span>
+      <h2 class="section-title">Simple, Honest <span>Pricing</span></h2>
+      <p style="color:rgba(255,255,255,0.5);margin-top:12px;font-size:0.95rem;">All inclusive access to every ride and attraction</p>
+    </div>
+    <div class="tickets-grid">
+      <div class="ticket-card regular reveal">
+        <p class="ticket-type">Kids Ticket</p>
+        <div class="ticket-price"><span class="rupee">₹</span>250</div>
+        <ul class="ticket-perks">
+          <li>All Kids Rides Access</li><li>Splash Zone Entry</li><li>Rain Dance</li><li>Swimming Pool</li>
+        </ul>
+        <button class="ticket-btn" onclick="alert('Redirecting to booking...')">Get Kids Pass</button>
+      </div>
+      <div class="ticket-card featured reveal">
+        <span class="ticket-featured-badge">Best Value</span>
+        <p class="ticket-type">Adult Ticket</p>
+        <div class="ticket-price"><span class="rupee">₹</span>390</div>
+        <ul class="ticket-perks">
+          <li>All Rides Full Access</li><li>Wave Pool + Slides</li><li>Rain Dance Arena</li><li>Lazy River + Pool</li><li>Locker Facility</li>
+        </ul>
+        <button class="ticket-btn" onclick="alert('Redirecting to booking...')">Get Adult Pass</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery" class="gallery-section">
+  <div class="gallery-header reveal">
+    <span class="section-tag">✦ Gallery</span>
+    <h2 class="section-title">See the <span>Vibes</span></h2>
+  </div>
+  <div class="gallery-grid">
+    <div class="gallery-item"><img src="https://files.yappe.in/place/full/yashneesh-fun-world-879458.webp" alt="Water Park"><div class="gallery-overlay"></div></div>
+    <div class="gallery-item"><img src="https://files.yappe.in/place/small/yashneesh-fun-world-879454.webp" alt="Rides"><div class="gallery-overlay"></div></div>
+    <div class="gallery-item"><img src="https://files.yappe.in/place/full/yashneesh-fun-world-879455.webp" alt="Fun"><div class="gallery-overlay"></div></div>
+    <div class="gallery-item"><img src="https://files.yappe.in/place/full/yashneesh-fun-world-879456.webp" alt="Splash"><div class="gallery-overlay"></div></div>
+    <div class="gallery-item"><img src="https://files.yappe.in/place/full/yashneesh-fun-world-879455.webp" alt="Pool"><div class="gallery-overlay"></div></div>
+  </div>
+</section>
+
+<!-- MAP + CONTACT -->
+<section id="contact">
+  <div class="map-contact-section">
+    <div class="reveal">
+      <span class="section-tag">✦ Find Us</span>
+      <h2 class="section-title" style="margin-bottom:20px;">Get <span>Here</span></h2>
+      <div class="map-container">
+        <iframe src="https://www.google.com/maps?q=Yashneesh+Fun+World+Belagavi&output=embed" width="100%" height="360" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+      </div>
+    </div>
+    <div class="contact-form-wrap reveal">
+      <span class="section-tag">✦ Contact</span>
+      <h2 class="section-title">Say <span>Hello</span></h2><br>
+      <div class="form-group"><input type="text" placeholder="Your Name" required></div>
+      <div class="form-group"><input type="email" placeholder="Your Email" required></div>
+      <div class="form-group"><textarea placeholder="Your Message or Query..."></textarea></div>
+      <button class="form-submit" onclick="alert('Message sent! We\'ll get back to you soon 🌊')">Send Message →</button>
+    </div>
+  </div>
+</section>
+
+<!-- CHATBOT -->
+<div class="chatbot-widget">
+  <div class="chat-window" id="chatWindow">
+    <div class="chat-head">
+      <div class="chat-avatar">🤖</div>
+      <div class="chat-head-info"><h4>Park Assistant</h4><span>● Online now</span></div>
+    </div>
+    <div class="chat-body-inner" id="chatBody">
+      <div class="chat-msg bot">Hi! 👋 Ask me about tickets, rides, timings or anything about Yashneesh Fun World!</div>
+    </div>
+    <div class="chat-input-row">
+      <input type="text" id="chatInput" placeholder="Type your question..." onkeydown="if(event.key==='Enter')sendChat()">
+      <button class="chat-send" onclick="sendChat()">➤</button>
+    </div>
+  </div>
+  <button class="chat-toggle" onclick="toggleChat()" id="chatToggle">💬</button>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Yashneesh <span>Fun World</span></div>
+  <p class="footer-tagline">Belagavi's Ultimate Water Park</p>
+  <div class="footer-links">
+    <a href="#about">About</a><a href="#rides">Rides</a><a href="#tickets">Tickets</a><a href="#gallery">Gallery</a><a href="#contact">Contact</a>
+  </div>
+  <p class="footer-copy">© 2025 Yashneesh Fun World. All Rights Reserved. Made with 💙 in Belagavi</p>
+</footer>
+
+<script>
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+function animateCursor() {
+  rx += (mx - rx) * 0.15; ry += (my - ry) * 0.15;
+  cursor.style.transform = `translate(${mx-6}px, ${my-6}px)`;
+  ring.style.transform = `translate(${rx-18}px, ${ry-18}px)`;
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
+
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 80);
+});
+
+const particlesEl = document.getElementById('particles');
+for (let i = 0; i < 25; i++) {
+  const b = document.createElement('div');
+  b.className = 'bubble';
+  const size = Math.random() * 60 + 10;
+  b.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;animation-duration:${Math.random()*15+10}s;animation-delay:${Math.random()*10}s;opacity:${Math.random()*0.3+0.1};`;
+  particlesEl.appendChild(b);
+}
+
+const revealEls = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+revealEls.forEach(el => observer.observe(el));
+
+function animateCounter(el) {
+  const target = parseInt(el.getAttribute('data-target'));
+  const step = target / (2000 / 16);
+  let current = 0;
+  const timer = setInterval(() => {
+    current += step;
+    if (current >= target) { el.textContent = target.toLocaleString() + '+'; clearInterval(timer); }
+    else { el.textContent = Math.floor(current).toLocaleString(); }
+  }, 16);
+}
+const counterObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { animateCounter(e.target); counterObserver.unobserve(e.target); } });
+}, { threshold: 0.5 });
+document.querySelectorAll('.stat-num').forEach(c => counterObserver.observe(c));
+
+function toggleChat() {
+  const w = document.getElementById('chatWindow');
+  w.classList.toggle('open');
+  document.getElementById('chatToggle').textContent = w.classList.contains('open') ? '✕' : '💬';
+}
+
+const chatReplies = {
+  'ticket': '🎟️ Adult tickets are ₹390 and Kids tickets are ₹250. All rides included!',
+  'price': '💰 Adults: ₹390 | Kids: ₹250. Great value for a full day of fun!',
+  'timing': '⏰ Mon–Fri 10AM–7PM, Sat–Sun 9AM–8PM. Public holidays 9AM–9PM!',
+  'time': '⏰ Mon–Fri 10AM–7PM, Sat–Sun 9AM–8PM.',
+  'ride': '🎢 Water Slides, Wave Pool, Rain Dance, Swimming Pool, Lazy River & Kids Zone!',
+  'slide': '🌊 High-speed and super thrilling! Minimum height 4ft required.',
+  'location': '📍 Located in Belagavi, Karnataka. Check the map section!',
+  'parking': '🅿️ Yes! Free parking for all visitors.',
+  'food': '🍔 Food court available inside the park!',
+  'hello': '👋 Hello! How can I help you enjoy Yashneesh Fun World today?',
+  'hi': '👋 Hey there! Ask me anything about rides, tickets, or timings!',
+};
+
+function sendChat() {
+  const input = document.getElementById('chatInput');
+  const body = document.getElementById('chatBody');
+  const msg = input.value.trim();
+  if (!msg) return;
+  const userDiv = document.createElement('div');
+  userDiv.className = 'chat-msg user';
+  userDiv.textContent = msg;
+  body.appendChild(userDiv);
+  input.value = '';
+  setTimeout(() => {
+    const botDiv = document.createElement('div');
+    botDiv.className = 'chat-msg bot';
+    const lower = msg.toLowerCase();
+    let reply = '🤔 Try asking about tickets, timings, rides, or location!';
+    for (const key in chatReplies) { if (lower.includes(key)) { reply = chatReplies[key]; break; } }
+    botDiv.textContent = reply;
+    body.appendChild(botDiv);
+    body.scrollTop = body.scrollHeight;
+  }, 600);
+  body.scrollTop = body.scrollHeight;
+}
+</script>
+</body>
+</html>
